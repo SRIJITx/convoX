@@ -1,6 +1,6 @@
-/* ====== MOBILE-FIRST CHAT.CSS ====== */
+/* ====== TRUE MOBILE-FIRST CHAT.CSS ====== */
 
-/* BASE STYLES - MOBILE DEFAULT */
+/* RESET & MOBILE BASE */
 * {
     margin: 0;
     padding: 0;
@@ -8,22 +8,23 @@
 }
 
 html, body {
-    height: 100%;
+    height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     background: #0d1117;
     color: white;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* FULLSCREEN FLEX LAYOUT */
+/* FLEX LAYOUT - MOBILE DEFAULT */
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* TOP BAR - MOBILE SIZE */
+/* TOP BAR - MOBILE PERFECT */
 .top {
     background: linear-gradient(135deg, #161b22, #1a2332);
     border-bottom: 1px solid #21262d;
@@ -40,7 +41,6 @@ body {
     font-weight: 600;
     color: #58A6FF;
     letter-spacing: 0.5px;
-    margin: 0;
 }
 
 .top button {
@@ -54,6 +54,7 @@ body {
     font-weight: 500;
     transition: all 0.2s ease;
     backdrop-filter: blur(10px);
+    min-width: 60px;
 }
 
 .top button:hover,
@@ -64,7 +65,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* CHAT MESSAGES - FLEXIBLE SCROLL */
+/* CHAT AREA - MOBILE SCROLL */
 .chat {
     flex: 1;
     overflow-y: auto;
@@ -74,7 +75,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* MESSAGE BUBBLES - MOBILE STYLE */
+/* MESSAGE BUBBLES - MOBILE */
 .message {
     margin-bottom: 14px;
     padding: 14px 18px;
@@ -85,7 +86,7 @@ body {
     word-break: break-word;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     animation: msgAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    max-width: 90%;
 }
 
 @keyframes msgAppear {
@@ -103,7 +104,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* BOTTOM INPUT BAR */
+/* INPUT BAR - MOBILE TOUCH */
 .msg {
     background: rgba(22, 27, 34, 0.95);
     backdrop-filter: blur(25px);
@@ -124,11 +125,11 @@ body {
     color: white;
     font-size: 16px;
     outline: none;
-    resize: none;
     min-height: 54px;
     max-height: 140px;
     transition: all 0.2s ease;
     backdrop-filter: blur(10px);
+    resize: vertical;
 }
 
 .msg input:focus {
@@ -141,7 +142,7 @@ body {
     color: #8b949e;
 }
 
-/* BUTTONS - MOBILE TOUCH FRIENDLY */
+/* MOBILE BUTTONS - TOUCH FRIENDLY (44px+) */
 .upload {
     width: 56px;
     height: 56px;
@@ -184,13 +185,18 @@ body {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.send:hover,
-.send:active {
+.send:hover:not(:disabled),
+.send:active:not(:disabled) {
     transform: scale(1.08) translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
 }
 
-/* MEDIA PREVIEWS */
+.send:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* MEDIA - MOBILE */
 .message img,
 .message video {
     max-width: 100%;
@@ -201,12 +207,6 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
-.message audio {
-    width: 100%;
-    margin: 12px 0;
-    border-radius: 12px;
-}
-
 .message a {
     color: #58A6FF;
     text-decoration: none;
@@ -214,7 +214,7 @@ body {
     font-weight: 500;
 }
 
-/* CUSTOM SCROLLBAR */
+/* MOBILE SCROLLBAR */
 .chat::-webkit-scrollbar {
     width: 4px;
 }
@@ -229,72 +229,64 @@ body {
     background: rgba(84, 166, 255, 0.6);
 }
 
-/* ====== TABLET+ IMPROVEMENTS ====== */
+/* ====== TABLET (481px+) ====== */
 @media (min-width: 481px) {
     .top {
         padding: 16px 24px;
     }
     
     .top h3 {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     .chat {
-        padding: 24px;
+        padding: 20px;
     }
     
     .msg {
-        padding: 20px 24px;
+        padding: 18px 24px;
     }
     
     .message {
-        padding: 16px 22px;
-        max-width: 80%;
-        margin-bottom: 18px;
+        max-width: 85%;
+        padding: 16px 20px;
     }
 }
 
-/* ====== DESKTOP IMPROVEMENTS ====== */
+/* ====== DESKTOP (769px+) ====== */
 @media (min-width: 769px) {
+    html, body {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
     .top {
-        padding: 18px 32px;
+        padding: 20px 32px;
+        border-radius: 12px 12px 0 0;
     }
     
     .top h3 {
-        font-size: 22px;
+        font-size: 24px;
     }
     
     .chat {
         padding: 32px;
+        border-radius: 0 0 12px 12px;
     }
     
     .msg {
         padding: 24px 32px;
+        border-radius: 0 0 12px 12px;
     }
     
     .message {
         max-width: 70%;
-        padding: 18px 24px;
+        padding: 20px 24px;
     }
     
     .upload, .send {
         width: 64px;
         height: 64px;
         font-size: 24px;
-    }
-}
-
-/* iOS SAFARI FIXES */
-@supports (-webkit-touch-callout: none) {
-    * {
-        -webkit-tap-highlight-color: transparent;
-    }
-    
-    .msg input {
-        -webkit-appearance: none;
-    }
-    
-    .chat {
-        -webkit-overflow-scrolling: touch;
     }
 }
