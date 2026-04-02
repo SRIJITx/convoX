@@ -37,8 +37,6 @@ body{
     color:#9aa4b2;
 }
 
-
-
 a{
     display:block;
     margin-top:12px;
@@ -60,14 +58,40 @@ button:hover{
     background:#3b8eea;
 }
 
-@media (max-width:480px){
-
-    .container{
-        padding:25px;
+/* ====== ADDED: MOBILE RESPONSIVE ====== */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
     }
-
-    .login h1{
-        font-size:22px;
+    
+    .container {
+        padding: 25px 20px;
+        margin: 10px;
+        border-radius: 8px;
     }
+    
+    .login h1 {
+        font-size: 24px;
+    }
+    
+    .login p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    button {
+        padding: 14px;
+        font-size: 16px;
+    }
+}
 
+@media (max-width: 480px) {
+    .container {
+        padding: 20px 15px;
+        margin: 5px;
+    }
+    
+    .login h1 {
+        font-size: 22px;
+    }
 }
