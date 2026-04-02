@@ -1,21 +1,13 @@
-/* PERFECT RESPONSIVE MOBILE */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-    --border-radius: 20px;
-    --primary: #58a6ff;
-    --bg: #0d1117;
-    --card: #21262d;
-}
 
 html, body {
     height: 100vh;
     width: 100vw;
     overflow: hidden;
     font-family: system-ui, -apple-system, sans-serif;
-    background: var(--bg);
+    background: #0d1117;
     color: white;
-    font-size: clamp(14px, 4vw, 16px);
+    font-size: 16px;
     line-height: 1.4;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
@@ -24,122 +16,117 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    width: 100vw;
 }
 
-/* TOP BAR - RESPONSIVE */
+/* TOP - EXACT HEIGHT */
 .top {
-    height: clamp(48px, 8vw, 56px);
-    padding: clamp(8px, 3vw, 12px) clamp(12px, 5vw, 20px);
+    height: 56px;
+    padding: 12px 16px;
     background: #161b22;
     border-bottom: 1px solid #30363d;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .top h3 {
-    font-size: clamp(15px, 4.5vw, 18px);
+    font-size: 16px;
     font-weight: 600;
-    color: var(--primary);
+    color: #58a6ff;
     margin: 0;
+    line-height: 1;
 }
 
 .top-buttons {
     display: flex;
-    gap: clamp(4px, 1.5vw, 8px);
+    gap: 6px;
 }
 
 .top button {
-    padding: clamp(6px, 2vw, 8px) clamp(10px, 3vw, 14px);
+    padding: 6px 12px;
     border: 1px solid #58a6ff20;
     background: #58a6ff15;
     color: #c9d1d9;
-    border-radius: var(--border-radius);
-    font-size: clamp(12px, 3.2vw, 14px);
-    min-height: clamp(30px, 7vw, 36px);
+    border-radius: 20px;
+    font-size: 13px;
+    height: 32px;
     cursor: pointer;
-    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
-.top button:active {
-    background: #58a6ff25;
-    transform: scale(0.98);
-}
-
-/* CHAT - FULL RESPONSIVE */
+/* CHAT - FULL REMAINING SPACE */
 .chat {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(8px, 4vw, 16px);
-    background: var(--bg);
+    padding: 12px 16px;
+    background: #0d1117;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 }
 
-/* MESSAGES - RESPONSIVE */
+/* MESSAGES */
 .message {
-    margin-bottom: clamp(8px, 3vw, 14px);
-    padding: clamp(10px, 4vw, 16px);
-    background: var(--card);
-    border-radius: clamp(12px, 5vw, 20px);
-    border-left: 3px solid var(--primary);
-    font-size: clamp(14px, 4vw, 16px);
-    max-width: clamp(85%, 92%, 95%);
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    background: #21262d;
+    border-radius: 16px;
+    border-left: 3px solid #58a6ff;
+    font-size: 15px;
+    max-width: 94%;
     word-break: break-word;
     align-self: flex-start;
-    animation: slideIn 0.3s ease-out;
 }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* INPUT BAR - RESPONSIVE */
+/* INPUT - EXACT HEIGHT */
 .msg {
-    padding: clamp(10px, 4vw, 16px);
+    height: 60px;
+    padding: 12px 16px;
     background: #161b22;
     border-top: 1px solid #30363d;
     display: flex;
-    align-items: flex-end;
-    gap: clamp(6px, 2.5vw, 12px);
+    align-items: center;
+    gap: 8px;
     flex-shrink: 0;
-    min-height: clamp(52px, 12vw, 64px);
+    box-sizing: border-box;
 }
 
 .msg input {
     flex: 1;
-    padding: clamp(10px, 4vw, 16px);
+    padding: 12px 16px;
     border: 1px solid #30363d;
-    border-radius: clamp(18px, 7vw, 26px);
+    border-radius: 22px;
     background: #0d1117;
     color: white;
-    font-size: clamp(15px, 4.2vw, 16px);
+    font-size: 16px;
     outline: none;
-    min-height: clamp(40px, 9vw, 48px);
-    max-height: clamp(100px, 25vw, 140px);
-    resize: vertical;
+    height: 36px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
 }
 
 .msg input::placeholder { 
     color: #8b949e; 
-    opacity: 0.8;
 }
 
 .msg input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px #58a6ff20;
+    border-color: #58a6ff;
 }
 
-/* BUTTONS - RESPONSIVE TOUCH */
+/* BUTTONS - FIXED SIZE */
 .upload, .send {
-    width: clamp(44px, 11vw, 56px);
-    height: clamp(44px, 11vw, 56px);
+    width: 48px;
+    height: 48px;
     border: none;
     border-radius: 50%;
     display: flex;
@@ -147,48 +134,49 @@ body {
     justify-content: center;
     flex-shrink: 0;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .upload {
     background: #21262d;
     color: #8b949e;
-    font-size: clamp(15px, 4vw, 18px);
-}
-
-.upload:active { 
-    background: #58a6ff20; 
-    transform: scale(0.95); 
+    font-size: 16px;
 }
 
 .send {
-    background: linear-gradient(135deg, var(--primary), #1f6feb);
+    background: #58a6ff;
     color: white;
-    font-size: clamp(16px, 4.5vw, 20px);
+    font-size: 18px;
     font-weight: 600;
 }
 
-.send:active { transform: scale(0.95); }
-
-/* RESPONSIVE BREAKPOINTS */
+/* RESPONSIVE - SMALL SCREENS */
 @media (max-width: 360px) {
     .top, .msg { padding-left: 12px; padding-right: 12px; }
     .chat { padding: 8px 12px; }
 }
 
-@media (min-width: 768px) {
-    body {
-        max-width: 500px;
-        margin: 0 auto;
-        height: 100vh;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+/* iOS FULLSCREEN */
+@supports (padding: max(0px)) {
+    body { 
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom); 
+    }
+    .top { 
+        padding-top: max(12px, env(safe-area-inset-top)); 
+    }
+    .msg { 
+        padding-bottom: max(12px, env(safe-area-inset-bottom)); 
     }
 }
 
-/* iOS SAFE AREA */
-@supports (padding: max(0px)) {
-    body { padding-bottom: env(safe-area-inset-bottom); }
-    .msg { padding-bottom: calc(clamp(10px, 4vw, 16px) + env(safe-area-inset-bottom)); }
+/* DESKTOP PREVIEW */
+@media (min-width: 768px) {
+    body {
+        max-width: 420px;
+        margin: 50px auto;
+        height: 700px;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+    }
 }
