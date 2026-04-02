@@ -1,32 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>ConvoX Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        @media (min-width: 500px) { 
+            body::before { 
+                content: "MOBILE VIEW ONLY - F12 → 📱 Device Mode"; 
+                position: fixed; 
+                top: 0; 
+                left: 0; 
+                right: 0; 
+                background: red; 
+                color: white; 
+                text-align: center; 
+                z-index: 9999; 
+                padding: 10px; 
+                font-size: 14px; 
+            }
+        }
+    </style>
     <link rel="stylesheet" href="chat.css">
 </head>
-
 <body>
-
     <div class="top">
         <h3>[convoX]</h3>
-
-        <div>
+        <div class="top-buttons">
             <button>Clear</button>
             <button>Invite</button>
         </div>
     </div>
 
-    <div class="chat">
-    </div>
+    <div class="chat"></div>
 
     <div class="msg">
         <button class="upload">🔗</button>
-
         <input type="text" placeholder="Type here...">
-
         <button class="send">➤</button>
     </div>
- <script src="chat.js"></script>
+    <script src="chat.js"></script>
 </body>
 </html>
