@@ -1,6 +1,4 @@
-/* ====== TRUE MOBILE-FIRST CHAT.CSS ====== */
-
-/* RESET & MOBILE BASE */
+/* ====== MOBILE ONLY - NO PC BIAS ====== */
 * {
     margin: 0;
     padding: 0;
@@ -9,22 +7,26 @@
 
 html, body {
     height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    width: 100vw;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
     background: #0d1117;
     color: white;
-    overflow: hidden;
+    font-size: 16px;
+    line-height: 1.4;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-/* FLEX LAYOUT - MOBILE DEFAULT */
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
-/* TOP BAR - MOBILE PERFECT */
+/* TOP BAR - TIGHT MOBILE */
 .top {
     background: linear-gradient(135deg, #161b22, #1a2332);
     border-bottom: 1px solid #21262d;
@@ -33,260 +35,182 @@ body {
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
-    backdrop-filter: blur(20px);
+    min-height: 48px;
 }
 
 .top h3 {
     font-size: 16px;
     font-weight: 600;
     color: #58A6FF;
-    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.top-buttons {
+    display: flex;
+    gap: 8px;
 }
 
 .top button {
     background: rgba(84, 166, 255, 0.15);
     border: 1px solid rgba(84, 166, 255, 0.3);
     color: #c9d1d9;
-    padding: 8px 14px;
+    padding: 8px 12px;
     border-radius: 20px;
-    cursor: pointer;
     font-size: 13px;
     font-weight: 500;
+    min-height: 36px;
+    min-width: 56px;
+    cursor: pointer;
     transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
-    min-width: 60px;
 }
 
-.top button:hover,
 .top button:active {
     background: rgba(84, 166, 255, 0.25);
-    border-color: #58A6FF;
-    color: #58A6FF;
-    transform: translateY(-1px);
+    transform: scale(0.98);
 }
 
-/* CHAT AREA - MOBILE SCROLL */
+/* CHAT - FULL HEIGHT NO GAP */
 .chat {
     flex: 1;
     overflow-y: auto;
-    padding: 16px;
-    background: linear-gradient(180deg, #0d1117 0%, #0f1621 100%);
+    overflow-x: hidden;
+    padding: 12px 16px;
+    background: #0d1117;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    margin: 0 !important;
 }
 
-/* MESSAGE BUBBLES - MOBILE */
+.chat::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+/* MESSAGES - MOBILE TIGHT */
 .message {
-    margin-bottom: 14px;
-    padding: 14px 18px;
-    background: rgba(84, 166, 255, 0.08);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border-left: 4px solid rgba(84, 166, 255, 0.4);
-    word-break: break-word;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    animation: msgAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    max-width: 90%;
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    background: rgba(24, 31, 42, 0.8);
+    border-radius: 18px;
+    border-left: 3px solid #58A6FF;
+    word-wrap: break-word;
+    font-size: 15px;
+    line-height: 1.4;
+    max-width: 92%;
+    animation: msgSlide 0.3s ease-out;
 }
 
-@keyframes msgAppear {
-    0% { 
-        opacity: 0; 
-        transform: translateY(20px) scale(0.95); 
-    }
-    100% { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-    }
+@keyframes msgSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.message:last-child {
-    margin-bottom: 20px;
-}
-
-/* INPUT BAR - MOBILE TOUCH */
+/* INPUT BAR - BOTTOM STICKY */
 .msg {
     background: rgba(22, 27, 34, 0.95);
-    backdrop-filter: blur(25px);
     border-top: 1px solid #21262d;
-    padding: 16px;
+    padding: 12px 16px;
     display: flex;
     align-items: flex-end;
-    gap: 12px;
+    gap: 10px;
     flex-shrink: 0;
+    min-height: 60px;
 }
 
 .msg input {
     flex: 1;
-    padding: 16px 20px;
-    border: 1.5px solid rgba(48, 54, 61, 0.8);
-    border-radius: 28px;
-    background: rgba(13, 17, 23, 0.8);
+    padding: 14px 18px;
+    border: 1px solid rgba(48, 54, 61, 0.6);
+    border-radius: 24px;
+    background: rgba(13, 17, 23, 0.9);
     color: white;
     font-size: 16px;
     outline: none;
-    min-height: 54px;
-    max-height: 140px;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
-    resize: vertical;
+    min-height: 48px;
+    max-height: 120px;
+    resize: none;
 }
 
 .msg input:focus {
     border-color: #58A6FF;
-    box-shadow: 0 0 0 4px rgba(84, 166, 255, 0.15);
-    background: rgba(13, 17, 23, 0.95);
+    background: rgba(13, 17, 23, 1);
 }
 
 .msg input::placeholder {
     color: #8b949e;
 }
 
-/* MOBILE BUTTONS - TOUCH FRIENDLY (44px+) */
-.upload {
-    width: 56px;
-    height: 56px;
+/* MOBILE TOUCH BUTTONS */
+.upload, .send {
+    width: 52px;
+    height: 52px;
     border: none;
-    background: rgba(31, 41, 55, 0.8);
-    color: #9ca3af;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
     flex-shrink: 0;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
+    transition: all 0.15s ease;
 }
 
-.upload:hover,
+.upload {
+    background: rgba(31, 41, 55, 0.8);
+    color: #9ca3af;
+    font-size: 18px;
+}
+
 .upload:active {
-    background: rgba(84, 166, 255, 0.2);
-    color: #58A6FF;
-    transform: scale(1.05);
+    background: rgba(84, 166, 255, 0.3);
+    transform: scale(0.95);
 }
 
 .send {
-    width: 60px;
-    height: 60px;
-    border: none;
-    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    background: linear-gradient(135deg, #58A6FF, #1f6feb);
     color: white;
-    border-radius: 50%;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 20px;
+    font-weight: 600;
+    min-width: 52px;
 }
 
-.send:hover:not(:disabled),
-.send:active:not(:disabled) {
-    transform: scale(1.08) translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+.send:active {
+    transform: scale(0.95);
 }
 
-.send:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* MEDIA - MOBILE */
-.message img,
-.message video {
+/* MEDIA */
+.message img, .message video {
     max-width: 100%;
-    max-height: 280px;
-    border-radius: 16px;
-    margin: 12px 0;
-    display: block;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    height: auto;
+    border-radius: 12px;
+    margin: 8px 0;
 }
 
-.message a {
-    color: #58A6FF;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-/* MOBILE SCROLLBAR */
-.chat::-webkit-scrollbar {
-    width: 4px;
-}
-.chat::-webkit-scrollbar-track {
-    background: transparent;
-}
-.chat::-webkit-scrollbar-thumb {
-    background: rgba(84, 166, 255, 0.4);
-    border-radius: 2px;
-}
-.chat::-webkit-scrollbar-thumb:hover {
-    background: rgba(84, 166, 255, 0.6);
-}
-
-/* ====== TABLET (481px+) ====== */
-@media (min-width: 481px) {
-    .top {
-        padding: 16px 24px;
-    }
-    
-    .top h3 {
-        font-size: 18px;
-    }
-    
-    .chat {
-        padding: 20px;
+/* KEYBOARD FIX - NO EXTRA SPACE */
+@supports (padding: max(0px)) {
+    body {
+        padding-bottom: env(safe-area-inset-bottom);
     }
     
     .msg {
-        padding: 18px 24px;
-    }
-    
-    .message {
-        max-width: 85%;
-        padding: 16px 20px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
 }
 
-/* ====== DESKTOP (769px+) ====== */
-@media (min-width: 769px) {
+/* iPhone X+ Notch */
+@supports not (padding: max(0px)) {
+    @media only screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+        .msg {
+            padding-bottom: 34px;
+        }
+    }
+}
+
+/* NO DESKTOP STYLES - PURE MOBILE */
+@media (min-width: 768px) {
+    /* Force mobile layout even on desktop */
     html, body {
-        max-width: 1200px;
+        max-width: 480px;
         margin: 0 auto;
-    }
-    
-    .top {
-        padding: 20px 32px;
-        border-radius: 12px 12px 0 0;
-    }
-    
-    .top h3 {
-        font-size: 24px;
-    }
-    
-    .chat {
-        padding: 32px;
-        border-radius: 0 0 12px 12px;
-    }
-    
-    .msg {
-        padding: 24px 32px;
-        border-radius: 0 0 12px 12px;
-    }
-    
-    .message {
-        max-width: 70%;
-        padding: 20px 24px;
-    }
-    
-    .upload, .send {
-        width: 64px;
-        height: 64px;
-        font-size: 24px;
+        height: 100vh;
     }
 }
