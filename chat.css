@@ -5,16 +5,16 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-
 body {
     background: #0d1117;
     color: white;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 100vh;
 }
 
-
+/* Top Bar */
 .top {
     display: flex;
     align-items: center;
@@ -22,6 +22,7 @@ body {
     padding: 15px 20px;
     background: #161b22;
     border-bottom: 1px solid #30363d;
+    flex-shrink: 0;
 }
 
 .top h3 {
@@ -29,7 +30,6 @@ body {
     color: #58A6FF;
     letter-spacing: 1px;
 }
-
 
 .top button {
     background: transparent;
@@ -40,6 +40,7 @@ body {
     margin-left: 8px;
     cursor: pointer;
     transition: 0.2s;
+    font-size: 14px;
 }
 
 .top button:hover {
@@ -47,68 +48,192 @@ body {
     color: #58A6FF;
 }
 
-
+/* Chat Messages - FLEXIBLE HEIGHT */
 .chat {
     flex: 1;
     padding: 20px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
 }
 
+/* Messages */
+.message {
+    margin-bottom: 15px;
+    padding: 12px 16px;
+    background: rgba(84, 166, 255, 0.1);
+    border-radius: 18px;
+    border-left: 3px solid #58A6FF;
+    word-wrap: break-word;
+    animation: slideIn 0.3s ease;
+    max-width: 85%;
+}
 
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Input Area - FIXED BOTTOM */
 .msg {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 15px;
+    padding: 16px 20px;
     background: #161b22;
     border-top: 1px solid #30363d;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100;
 }
-
 
 .upload {
     background: #1f2937;
     border: none;
     color: #9aa4b2;
-    padding: 10px;
+    padding: 12px;
     border-radius: 50%;
     cursor: pointer;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
 }
-
 
 .msg input {
     flex: 1;
-    padding: 12px 15px;
+    padding: 14px 18px;
     border-radius: 25px;
     border: 1px solid #30363d;
     background: #0d1117;
     color: white;
     outline: none;
+    font-size: 16px; /* iOS zoom fix */
+    resize: none;
+    min-height: 48px;
 }
 
+.msg input:focus {
+    border-color: #58A6FF;
+    box-shadow: 0 0 0 3px rgba(84, 166, 255, 0.2);
+}
 
 .send {
     background: #00d4ff;
     border: none;
     color: black;
-    padding: 12px 16px;
+    padding: 14px 18px;
     border-radius: 50%;
     cursor: pointer;
     font-weight: bold;
     transition: 0.2s;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
 }
 
 .send:hover {
     transform: scale(1.05);
+    background: #00b8cc;
 }
 
+/* File Previews */
+.message img,
+.message video,
+.message audio {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 8px 0;
+}
 
-@media (max-width:480px) {
+.message a {
+    color: #58A6FF;
+    text-decoration: none;
+}
 
+/* Custom Scrollbar */
+.chat::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat::-webkit-scrollbar-thumb {
+    background: rgba(84, 166, 255, 0.3);
+    border-radius: 3px;
+}
+
+.chat::-webkit-scrollbar-thumb:hover {
+    background: rgba(84, 166, 255, 0.5);
+}
+
+/* ====== MOBILE RESPONSIVE ====== */
+@media (max-width: 768px) {
+    .top {
+        padding: 12px 16px;
+    }
+    
     .top h3 {
         font-size: 16px;
     }
-
-    .msg input {
-        font-size: 14px;
+    
+    .chat {
+        padding: 12px;
     }
+    
+    .msg {
+        padding: 14px 16px;
+        gap: 8px;
+    }
+    
+    .message {
+        max-width: 92%;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+    }
+}
 
+@media (max-width: 480px) {
+    .top {
+        padding: 10px 12px;
+    }
+    
+    .top button {
+        padding: 5px 12px;
+        font-size: 13px;
+    }
+    
+    .chat {
+        padding: 8px;
+    }
+    
+    .msg input {
+        padding: 12px 16px;
+    }
+    
+    .upload, .send {
+        width: 46px;
+        height: 46px;
+        font-size: 16px;
+    }
+    
+    .message {
+        max-width: 95%;
+        padding: 8px 12px;
+    }
+}
+
+/* iOS Safari fixes */
+@supports (-webkit-touch-callout: none) {
+    input {
+        -webkit-appearance: none;
+    }
 }
