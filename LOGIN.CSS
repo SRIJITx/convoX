@@ -73,15 +73,40 @@ button:hover {
     background: #3b8eea;
 }
 
-
-@media (max-width:480px) {
-
-    .container {
-        padding: 25px;
+/* ====== ADDED: MOBILE RESPONSIVE ====== */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
     }
+    
+    .container {
+        padding: 25px 20px;
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .login h1 {
+        font-size: 24px;
+    }
+    
+    input {
+        padding: 14px;
+        font-size: 16px; /* Prevents iOS zoom */
+    }
+    
+    button {
+        padding: 14px;
+        font-size: 16px;
+    }
+}
 
+@media (max-width: 480px) {
+    .container {
+        padding: 20px 15px;
+        margin: 5px;
+    }
+    
     .login h1 {
         font-size: 22px;
     }
-
 }
