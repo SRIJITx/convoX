@@ -1,36 +1,44 @@
+// ======= login.js for ConvoX =======
+
 const form = document.getElementById("loginForm");
 const usernameInput = document.getElementById("username");
 const roomInput = document.getElementById("password");
 
-form.addEventListener("submit", function(e){
+// ======= FIX: Auto-fill room code from invite link =======
+// If someone opens ?room=XXXX, pre-fill the room code field
+const urlParams = new URLSearchParams(window.location.search);
+const roomFromURL = urlParams.get("room");
+if (roomFromURL) {
+    roomInput.value = roomFromURL;
+}
 
+form.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const username = usernameInput.value.trim();
-    const roomCode = roomInput.value.trim();
+    const roomCode = roomInput.value.trim().toUpperCase(); // normalize to uppercase
 
-    // username validation
-    if(username === ""){
+    // Username validation
+    if (username === "") {
         alert("Please enter a username");
         return;
     }
 
-    // room code validation
-    if(roomCode === ""){
+    // Room code validation
+    if (roomCode === "") {
         alert("Please enter a room code");
         return;
     }
 
-    if(roomCode.length < 4 || roomCode.length > 8){
+    if (roomCode.length < 4 || roomCode.length > 8) {
         alert("Room code must be between 4 and 8 characters");
         return;
     }
 
-    // store user info
+    // Store user info
     localStorage.setItem("convox_username", username);
     localStorage.setItem("convox_room", roomCode);
 
-    // go to next page
+    // Go to next page
     window.location.href = "disclaimer.html";
-
 });
