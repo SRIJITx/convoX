@@ -25,8 +25,8 @@ let messages = [];
 // ======= WEBSOCKET SETUP (PieSocket - free, no backend needed) =======
 // Sign up free at https://piesocket.com to get your own API key
 // Free plan: 1000 connections/day — enough for testing & small projects
-const PIESOCKET_API_KEY = "oCObSl0VRRlMDVJrFTZGFbzqvIxNLkiRqzW4ryku"; // Free demo key
-const PIESOCKET_CLUSTER = "s14426.blr1"; // Free cluster
+const PIESOCKET_API_KEY = "RISge0Z62ctXhdrgVlmftrWvDZ2igqJpAw1m23Qn";
+const PIESOCKET_CLUSTER = "free.blr2";
 
 let ws = null;
 
