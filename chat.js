@@ -1,31 +1,91 @@
 ```javascript
-// ======= chat.js for ConvoX ======
+// ======= chat.js for ConvoX =======
 
-// Get DOM elements
+// ======= GET DOM ELEMENTS =======
+
 const chatContainer = document.querySelector(".chat");
-const msgInput = document.querySelector(".msg input");
-const sendBtn = document.querySelector(".msg .send");
-const uploadBtn = document.querySelector(".msg .upload");
-const clearBtn = document.querySelector(".top button:nth-child(1)");
-const inviteBtn = document.querySelector(".top button:nth-child(2)");
 
-// Create hidden file input
+const msgInput =
+    document.querySelector(".msg input") ||
+    document.querySelector("input");
+
+const sendBtn =
+    document.querySelector(".msg .send") ||
+    document.querySelector(".send") ||
+    document.querySelector(".send-btn") ||
+    document.querySelector("#sendBtn");
+
+const uploadBtn =
+    document.querySelector(".msg .upload") ||
+    document.querySelector(".upload") ||
+    document.querySelector(".upload-btn") ||
+    document.querySelector("#uploadBtn");
+
+const clearBtn =
+    document.querySelector(".top button:nth-child(1)") ||
+    document.querySelector(".clear") ||
+    document.querySelector(".clear-btn") ||
+    document.querySelector("#clearBtn");
+
+const inviteBtn =
+    document.querySelector(".top button:nth-child(2)") ||
+    document.querySelector(".invite") ||
+    document.querySelector(".invite-btn") ||
+    document.querySelector("#inviteBtn");
+
+// ======= SAFETY CHECK =======
+
+if (!chatContainer) {
+    console.error("❌ Chat container not found");
+}
+
+if (!msgInput) {
+    console.error("❌ Message input not found");
+}
+
+if (!sendBtn) {
+    console.error("❌ Send button not found");
+}
+
+if (!uploadBtn) {
+    console.error("❌ Upload button not found");
+}
+
+if (!clearBtn) {
+    console.error("❌ Clear button not found");
+}
+
+if (!inviteBtn) {
+    console.error("❌ Invite button not found");
+}
+
+// ======= CREATE FILE INPUT =======
+
 const fileInput = document.createElement("input");
+
 fileInput.type = "file";
+
 fileInput.style.display = "none";
+
 fileInput.accept =
     "image/*,video/*,audio/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain";
 
 document.body.appendChild(fileInput);
 
-// Get username & room
-const username = localStorage.getItem("convox_username") || "Guest";
-const room = localStorage.getItem("convox_room") || "NoRoom";
+// ======= USER INFO =======
 
-// Unique client ID
+const username =
+    localStorage.getItem("convox_username") || "Guest";
+
+const room =
+    localStorage.getItem("convox_room") || "NoRoom";
+
+// ======= UNIQUE CLIENT ID =======
+
 const clientId = crypto.randomUUID();
 
-// Redirect if no username or room
+// ======= REDIRECT IF NO LOGIN =======
+
 if (
     !localStorage.getItem("convox_username") ||
     !localStorage.getItem("convox_room")
@@ -33,11 +93,14 @@ if (
     window.location.href = "index.html";
 }
 
-// Session messages
+// ======= SESSION MESSAGES =======
+
 let messages = [];
 
 // ======= SECURITY =======
+
 function escapeHTML(str) {
+
     return str
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -47,37 +110,53 @@ function escapeHTML(str) {
 }
 
 // ======= WEBSOCKET =======
-const PIESOCKET_API_KEY = "RISge0Z62ctXhdrgVlmftrWvDZ2igqJpAw1m23Qn";
+
+const PIESOCKET_API_KEY =
+    "RISge0Z62ctXhdrgVlmftrWvDZ2igqJpAw1m23Qn";
+
 const PIESOCKET_CLUSTER = "free.blr2";
 
 let ws = null;
 
 let reconnectTimeout = null;
+
 let reconnectAttempts = 0;
 
 const MAX_RECONNECT_ATTEMPTS = 10;
 
+// ======= INIT WEBSOCKET =======
+
 function initWebSocket() {
+
     if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+
         console.error("❌ Max reconnect attempts reached.");
+
         return;
     }
 
-    const wsUrl = `wss://${PIESOCKET_CLUSTER}.piesocket.com/v3/${encodeURIComponent(
-        room
-    )}?api_key=${PIESOCKET_API_KEY}&notify_self=1`;
+    const wsUrl =
+        `wss://${PIESOCKET_CLUSTER}.piesocket.com/v3/${encodeURIComponent(room)}?api_key=${PIESOCKET_API_KEY}&notify_self=1`;
 
     console.log("🔄 Connecting to room:", room);
 
     ws = new WebSocket(wsUrl);
 
+    // ===== CONNECTED =====
+
     ws.onopen = () => {
+
         console.log("✅ Connected to room:", room);
+
         reconnectAttempts = 0;
     };
 
+    // ===== MESSAGE =====
+
     ws.onmessage = (event) => {
+
         try {
+
             const data = JSON.parse(event.data);
 
             // Ignore system messages
@@ -95,11 +174,15 @@ function initWebSocket() {
             });
 
         } catch (e) {
-            // Ignore non-JSON messages
+
+            // Ignore non JSON
         }
     };
 
+    // ===== CLOSE =====
+
     ws.onclose = () => {
+
         console.log("❌ Disconnected");
 
         reconnectAttempts++;
@@ -107,21 +190,30 @@ function initWebSocket() {
         clearTimeout(reconnectTimeout);
 
         reconnectTimeout = setTimeout(() => {
+
             console.log(`🔄 Reconnecting (${reconnectAttempts})...`);
+
             initWebSocket();
+
         }, 2000);
     };
 
+    // ===== ERROR =====
+
     ws.onerror = (err) => {
+
         console.error("❌ WebSocket error:", err);
     };
 }
 
 // ======= START =======
+
 console.log(`${username} joined room: ${room}`);
+
 initWebSocket();
 
 // ======= DISPLAY MESSAGE =======
+
 function displayMessage({
     sender,
     content,
@@ -129,129 +221,170 @@ function displayMessage({
     fileURL = "",
     mimeType = ""
 }) {
+
+    if (!chatContainer) return;
+
     const msgDiv = document.createElement("div");
 
     msgDiv.classList.add("message");
 
     const safeSender = escapeHTML(sender);
+
     const safeContent = escapeHTML(content);
 
     // ===== TEXT =====
+
     if (type === "text") {
+
         msgDiv.innerHTML = `
             <strong>${safeSender}:</strong> ${safeContent}
         `;
     }
 
     // ===== FILE =====
+
     else if (type === "file") {
 
-        const ext = content.split(".").pop().toLowerCase();
+        const ext =
+            content.split(".").pop().toLowerCase();
 
         let fileHTML = "";
 
         // ===== IMAGE =====
+
         if (
-            ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"].includes(ext)
+            ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"]
+            .includes(ext)
         ) {
+
             fileHTML = `
                 <div style="margin:5px 0;">
+
                     <img
                         src="${fileURL}"
                         alt="${safeContent}"
+
                         style="
                             max-width:250px;
                             max-height:200px;
                             border-radius:8px;
                             cursor:pointer;
                         "
+
                         onclick="window.open('${fileURL}','_blank')"
                     />
 
                     <div style="margin-top:5px;">
+
                         <small>${safeContent}</small><br>
 
                         <a
                             href="${fileURL}"
                             download="${safeContent}"
+
                             style="font-size:12px;"
                         >
                             📥 Download
                         </a>
+
                     </div>
+
                 </div>
             `;
         }
 
         // ===== VIDEO =====
+
         else if (
-            ["mp4", "webm", "mov", "avi", "mkv"].includes(ext)
+            ["mp4", "webm", "mov", "avi", "mkv"]
+            .includes(ext)
         ) {
+
             fileHTML = `
                 <div style="margin:5px 0;">
+
                     <video
                         controls
+
                         style="
                             max-width:300px;
                             max-height:200px;
                             border-radius:8px;
                         "
                     >
+
                         <source
                             src="${fileURL}"
                             type="${mimeType || "video/" + ext}"
                         >
 
                         Your browser doesn't support video.
+
                     </video>
 
                     <div style="margin-top:5px;">
+
                         <small>${safeContent}</small><br>
 
                         <a
                             href="${fileURL}"
                             download="${safeContent}"
+
                             style="font-size:12px;"
                         >
                             📥 Download
                         </a>
+
                     </div>
+
                 </div>
             `;
         }
 
         // ===== AUDIO =====
+
         else if (
-            ["mp3", "wav", "ogg", "m4a"].includes(ext)
+            ["mp3", "wav", "ogg", "m4a"]
+            .includes(ext)
         ) {
+
             fileHTML = `
                 <div style="margin:5px 0;">
+
                     <audio controls style="width:250px;">
+
                         <source
                             src="${fileURL}"
                             type="${mimeType || "audio/" + ext}"
                         >
 
                         Your browser doesn't support audio.
+
                     </audio>
 
                     <div style="margin-top:5px;">
+
                         <small>${safeContent}</small><br>
 
                         <a
                             href="${fileURL}"
                             download="${safeContent}"
+
                             style="font-size:12px;"
                         >
                             📥 Download
                         </a>
+
                     </div>
+
                 </div>
             `;
         }
 
         // ===== OTHER FILES =====
+
         else {
+
             fileHTML = `
                 <div
                     style="
@@ -261,6 +394,7 @@ function displayMessage({
                         border-radius:8px;
                     "
                 >
+
                     <div
                         style="
                             display:flex;
@@ -268,9 +402,11 @@ function displayMessage({
                             gap:10px;
                         "
                     >
+
                         <span style="font-size:24px;">📄</span>
 
                         <div>
+
                             <div>
                                 <strong>${safeContent}</strong>
                             </div>
@@ -278,12 +414,16 @@ function displayMessage({
                             <a
                                 href="${fileURL}"
                                 download="${safeContent}"
+
                                 style="font-size:12px;"
                             >
                                 📥 Download
                             </a>
+
                         </div>
+
                     </div>
+
                 </div>
             `;
         }
@@ -296,11 +436,15 @@ function displayMessage({
 
     chatContainer.appendChild(msgDiv);
 
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    chatContainer.scrollTop =
+        chatContainer.scrollHeight;
 }
 
 // ======= SEND MESSAGE =======
+
 function sendMessage() {
+
+    if (!msgInput) return;
 
     const text = msgInput.value.trim();
 
@@ -333,6 +477,7 @@ function sendMessage() {
 }
 
 // ======= FILE UPLOAD =======
+
 function handleFileUpload(event) {
 
     const file = event.target.files[0];
@@ -340,6 +485,7 @@ function handleFileUpload(event) {
     if (!file) return;
 
     // ===== 20MB LIMIT =====
+
     if (file.size > 20 * 1024 * 1024) {
 
         alert("File too large! Maximum size is 20MB.");
@@ -389,13 +535,19 @@ function handleFileUpload(event) {
 }
 
 // ======= OTHER FUNCTIONS =======
+
 function triggerFileUpload() {
+
     fileInput.click();
 }
 
 function clearChat() {
 
-    if (confirm("Are you sure you want to clear the chat?")) {
+    if (
+        confirm(
+            "Are you sure you want to clear the chat?"
+        )
+    ) {
 
         messages = [];
 
@@ -404,33 +556,72 @@ function clearChat() {
 }
 
 // ======= INVITE LINK =======
+
 function generateInviteLink() {
 
     const baseUrl = window.location.origin;
 
-    const link = `${baseUrl}/index.html?room=${encodeURIComponent(room)}`;
+    const link =
+        `${baseUrl}/index.html?room=${encodeURIComponent(room)}`;
 
-    prompt("Share this link to invite others:", link);
+    prompt(
+        "Share this link to invite others:",
+        link
+    );
 }
 
 // ======= EVENT LISTENERS =======
-sendBtn.addEventListener("click", sendMessage);
 
-msgInput.addEventListener("keypress", function (e) {
+if (sendBtn) {
 
-    if (e.key === "Enter") {
+    sendBtn.addEventListener(
+        "click",
+        sendMessage
+    );
+}
 
-        e.preventDefault();
+if (msgInput) {
 
-        sendMessage();
-    }
-});
+    msgInput.addEventListener(
+        "keypress",
+        function (e) {
 
-uploadBtn.addEventListener("click", triggerFileUpload);
+            if (e.key === "Enter") {
 
-fileInput.addEventListener("change", handleFileUpload);
+                e.preventDefault();
 
-clearBtn.addEventListener("click", clearChat);
+                sendMessage();
+            }
+        }
+    );
+}
 
-inviteBtn.addEventListener("click", generateInviteLink);
+if (uploadBtn) {
+
+    uploadBtn.addEventListener(
+        "click",
+        triggerFileUpload
+    );
+}
+
+fileInput.addEventListener(
+    "change",
+    handleFileUpload
+);
+
+if (clearBtn) {
+
+    clearBtn.addEventListener(
+        "click",
+        clearChat
+    );
+}
+
+if (inviteBtn) {
+
+    inviteBtn.addEventListener(
+        "click",
+        generateInviteLink
+    );
+}
 ```
