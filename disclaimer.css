@@ -1,97 +1,162 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+/* ======= disclaimer.css for ConvoX — Mobile First ======= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
-    background-color:#0d1117;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    padding:20px;
+body {
+    background-color: #0d1117;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding: 16px;
+    background-image: radial-gradient(ellipse at top, #161b22 0%, #0d1117 70%);
 }
 
-.container{
-    background-color:#161b22;
-    color:aliceblue;
-    width:100%;
-    max-width:420px;
-    padding:40px;
-    border-radius:12px;
-    box-shadow:0 0 25px rgba(0,0,0,0.5);
+.container {
+    background-color: #161b22;
+    color: aliceblue;
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 28px;
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), 0 0 0 1px #30363d;
+    animation: fadeUp 0.4s ease;
 }
 
-.login h1{
-    text-align:center;
-    margin-bottom:15px;
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-.login p{
-    text-align:center;
-    font-size:13px;
-    margin-bottom:30px;
-    line-height:1.6;
-    color:#9aa4b2;
+/* ICON / WARNING BADGE */
+.disclaimer-icon {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 12px;
 }
 
-a{
-    display:block;
-    margin-top:12px;
+.login h1 {
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 24px;
+    color: #58A6FF;
+    letter-spacing: 0.5px;
 }
 
-button{
-    width:100%;
-    padding:12px;
-    background:#58A6FF;
-    border:none;
-    border-radius:7px;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.2s;
+/* DISCLAIMER TEXT */
+.login p {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 28px;
+    line-height: 1.7;
+    color: #9aa4b2;
 }
 
-button:hover{
-    background:#3b8eea;
+/* HIGHLIGHT IMPORTANT WORDS */
+.login p strong {
+    color: #c9d1d9;
 }
 
-/* ====== ADDED: MOBILE RESPONSIVE ====== */
+/* DIVIDER */
+.divider {
+    height: 1px;
+    background: #30363d;
+    margin-bottom: 24px;
+}
+
+/* LINK */
+a {
+    display: block;
+    margin-top: 14px;
+    text-align: center;
+    color: #58A6FF;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #3b8eea;
+    text-decoration: underline;
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 13px;
+    background: #58A6FF;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+}
+
+button:hover {
+    background: #3b8eea;
+    box-shadow: 0 4px 20px rgba(88, 166, 255, 0.45);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* ======= TABLET ======= */
 @media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-    
     .container {
-        padding: 25px 20px;
-        margin: 10px;
-        border-radius: 8px;
+        padding: 30px 22px;
     }
-    
-    .login h1 {
-        font-size: 24px;
-    }
-    
-    .login p {
-        font-size: 14px;
-        line-height: 1.5;
-    }
-    
-    button {
-        padding: 14px;
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 20px 15px;
-        margin: 5px;
-    }
-    
     .login h1 {
         font-size: 22px;
+    }
+}
+
+/* ======= MOBILE ======= */
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+        align-items: flex-start;
+        padding-top: 40px;
+    }
+    .container {
+        padding: 26px 18px;
+        border-radius: 14px;
+    }
+    .login h1 {
+        font-size: 20px;
+    }
+    .login p {
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    button {
+        padding: 14px;
+    }
+}
+
+/* ======= TINY PHONES ======= */
+@media (max-width: 360px) {
+    body {
+        padding: 8px;
+        padding-top: 24px;
+    }
+    .container {
+        padding: 20px 14px;
+    }
+    .login h1 {
+        font-size: 18px;
+    }
+    .login p {
+        font-size: 12px;
     }
 }
