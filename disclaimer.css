@@ -1,123 +1,88 @@
-/* ======= disclaimer.css for ConvoX ======= */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
-
-body {
-    background-color: #0d1117;
-    background-image: radial-gradient(ellipse at top, #161b22 0%, #0d1117 70%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    padding: 20px;
+body{
+    background-color:#0d1117;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
 }
-
-.container {
-    background-color: #161b22;
-    color: aliceblue;
-    width: 100%;
-    max-width: 440px;
-    padding: 40px 32px;
-    border-radius: 16px;
-    box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 0 1px #30363d;
-    animation: fadeUp 0.35s ease;
+.container{
+    background-color:#161b22;
+    color:aliceblue;
+    width:100%;
+    max-width:420px;
+    padding:40px;
+    border-radius:12px;
+    box-shadow:0 0 25px rgba(0,0,0,0.5);
 }
-
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
+.login h1{
+    text-align:center;
+    margin-bottom:15px;
 }
-
-/* TITLE */
-.login h1 {
-    text-align: center;
-    font-size: 26px;
-    color: #58A6FF;
-    margin-bottom: 20px;
-    letter-spacing: 1px;
+.login p{
+    text-align:center;
+    font-size:13px;
+    margin-bottom:30px;
+    line-height:1.6;
+    color:#9aa4b2;
 }
-
-/* FEATURE LIST — fix the squished text by styling the <p> properly */
-.login p {
-    color: #9aa4b2;
-    font-size: 14px;
-    line-height: 2;           /* good spacing between bullet lines */
-    margin-bottom: 28px;
-    text-align: left;
-    background: #0d1117;
-    border-radius: 10px;
-    padding: 16px 18px;
-    border: 1px solid #30363d;
+a{
+    display:block;
+    margin-top:12px;
 }
-
-/* BUTTONS */
-.login a {
-    display: block;
-    margin-top: 0;
-    text-decoration: none;
+button{
+    width:100%;
+    padding:12px;
+    background:#58A6FF;
+    border:none;
+    border-radius:7px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
 }
-
-.login a + a {
-    margin-top: 10px;
+button:hover{
+    background:#3b8eea;
 }
-
-.login button {
-    width: 100%;
-    padding: 13px;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-    letter-spacing: 0.5px;
+/* ====== ADDED: MOBILE RESPONSIVE ====== */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 25px 20px;
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .login h1 {
+        font-size: 24px;
+    }
+    
+    .login p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    button {
+        padding: 14px;
+        font-size: 16px;
+    }
 }
-
-/* NEXT button - blue */
-.login a:first-of-type button {
-    background: #58A6FF;
-    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
-}
-.login a:first-of-type button:hover {
-    background: #3b8eea;
-    box-shadow: 0 4px 20px rgba(88, 166, 255, 0.45);
-}
-
-/* BACK button - subtle */
-.login a:last-of-type button {
-    background: #21262d;
-    border: 1px solid #30363d;
-    color: #c9d1d9;
-}
-.login a:last-of-type button:hover {
-    background: #2d333b;
-    border-color: #58a6ff50;
-}
-
-.login button:active {
-    transform: scale(0.98);
-}
-
-/* ======= MOBILE ======= */
 @media (max-width: 480px) {
-    body { padding: 16px; align-items: flex-start; padding-top: 50px; }
-    .container { padding: 28px 20px; }
-    .login h1 { font-size: 22px; }
-    .login p { font-size: 13px; line-height: 1.9; padding: 14px 14px; }
-    .login button { padding: 13px; font-size: 15px; }
-}
-
-/* ======= TINY PHONES ======= */
-@media (max-width: 360px) {
-    body { padding: 10px; padding-top: 30px; }
-    .container { padding: 22px 14px; }
-    .login h1 { font-size: 20px; }
-    .login p { font-size: 12px; }
+    .container {
+        padding: 20px 15px;
+        margin: 5px;
+    }
+    
+    .login h1 {
+        font-size: 22px;
+    }
 }
