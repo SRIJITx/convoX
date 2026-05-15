@@ -19,14 +19,21 @@ document.body.appendChild(fileInput);
 const username = localStorage.getItem("convox_username");
 const room = localStorage.getItem("convox_room");
 
-// ======= FIX 1: No username/room = send back to login page =======
-// This handles the case where someone opens chat.html directly without logging in
+// If no username/room, redirect to login
 if (!username || !room) {
     window.location.href = "index.html";
 }
 
 // Session messages (in-memory)
 let messages = [];
+
+// ======= CHUNK SETTINGS =======
+// PieSocket free plan has ~64KB per message limit
+// We split files into 32KB chunks to be safe
+const CHUNK_SIZE = 32 * 1024; // 32KB per chunk
+
+// Store incoming file chunks: { [transferId]: { chunks: [], total, name, mimeType } }
+const incomingFiles = {};
 
 // ======= WEBSOCKET SETUP =======
 const PIESOCKET_API_KEY = "RISge0Z62ctXhdrgVlmftrWvDZ2igqJpAw1m23Qn";
@@ -48,23 +55,64 @@ function initWebSocket() {
         try {
             const data = JSON.parse(event.data);
 
-            // Ignore PieSocket system messages (they have no username)
+            // Ignore PieSocket system messages (no username)
             if (!data.username) return;
 
-            // Ignore own messages (we show them instantly on send)
+            // Ignore own messages
             if (data.username === username) return;
 
-            // Show message from other users
-            displayMessage({
-                sender: data.username,
-                content: data.content,
-                type: data.type || "text",
-                fileURL: data.fileURL || "",
-                mimeType: data.mimeType || ""
-            });
+            if (data.type === "text") {
+                // Normal text message
+                displayMessage({
+                    sender: data.username,
+                    content: data.content,
+                    type: "text"
+                });
+
+            } else if (data.type === "file-chunk") {
+                // ======= RECEIVE FILE CHUNK =======
+                const { transferId, chunkIndex, totalChunks, chunk, fileName, mimeType } = data;
+
+                // Initialize storage for this transfer
+                if (!incomingFiles[transferId]) {
+                    incomingFiles[transferId] = {
+                        chunks: new Array(totalChunks),
+                        received: 0,
+                        total: totalChunks,
+                        name: fileName,
+                        mimeType: mimeType,
+                        sender: data.username
+                    };
+                }
+
+                // Store this chunk
+                incomingFiles[transferId].chunks[chunkIndex] = chunk;
+                incomingFiles[transferId].received++;
+
+                // Show progress
+                console.log(`📦 Chunk ${chunkIndex + 1}/${totalChunks} received for ${fileName}`);
+
+                // All chunks received — reassemble the file
+                if (incomingFiles[transferId].received === totalChunks) {
+                    const fullBase64 = incomingFiles[transferId].chunks.join("");
+                    const fileURL = `data:${mimeType};base64,${fullBase64}`;
+
+                    displayMessage({
+                        sender: incomingFiles[transferId].sender,
+                        content: fileName,
+                        type: "file",
+                        fileURL: fileURL,
+                        mimeType: mimeType
+                    });
+
+                    // Clean up
+                    delete incomingFiles[transferId];
+                    console.log(`✅ File ${fileName} fully received!`);
+                }
+            }
 
         } catch (e) {
-            // Ignore non-JSON system messages from PieSocket
+            console.error("Message parse error:", e);
         }
     };
 
@@ -93,7 +141,6 @@ function displayMessage({ sender, content, type = "text", fileURL = "", mimeType
         let fileHTML = "";
 
         if (["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"].includes(ext)) {
-            // ✅ FIX 3: fileURL is now base64 so image previews & downloads work cross-device
             fileHTML = `
                 <div style="margin: 5px 0;">
                     <img src="${fileURL}" alt="${content}" 
@@ -158,7 +205,7 @@ function sendMessage() {
 
     const msgObj = { sender: username, content: text, type: "text" };
     messages.push(msgObj);
-    displayMessage(msgObj); // show instantly for sender
+    displayMessage(msgObj);
 
     if (ws?.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
@@ -172,43 +219,64 @@ function sendMessage() {
     msgInput.value = "";
 }
 
-// ======= FILE UPLOAD — base64 so previews & downloads work on ALL devices =======
+// ======= FILE UPLOAD — chunked sending so large files work =======
 function handleFileUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    // 1MB limit — WebSocket can't handle huge files
-    if (file.size > 1 * 1024 * 1024) {
-        alert("File too large! Maximum size is 1MB.\nTip: compress your image before sending.");
+    // 5MB max
+    if (file.size > 5 * 1024 * 1024) {
+        alert("File too large! Maximum size is 5MB.");
         fileInput.value = "";
         return;
     }
 
     const reader = new FileReader();
     reader.onload = function (e) {
-        // base64 data URL — works on any device, no server needed
-        const base64Data = e.target.result;
+        // e.target.result = "data:image/png;base64,XXXX..."
+        const dataURL = e.target.result;
 
+        // Strip the "data:mime/type;base64," prefix — only send raw base64
+        const base64 = dataURL.split(",")[1];
+
+        // Show immediately for sender using full dataURL
         const msgObj = {
             sender: username,
             content: file.name,
             type: "file",
-            fileURL: base64Data,
+            fileURL: dataURL,
             mimeType: file.type
         };
-
         messages.push(msgObj);
-        displayMessage(msgObj); // show instantly for sender
+        displayMessage(msgObj);
 
-        if (ws?.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({
-                username,
-                room,
-                content: file.name,
-                type: "file",
-                fileURL: base64Data, // ✅ real data, not a blob URL
-                mimeType: file.type
-            }));
+        // ======= SEND IN CHUNKS =======
+        // Unique ID for this file transfer so receiver knows which chunks belong together
+        const transferId = `${username}-${Date.now()}`;
+        const totalChunks = Math.ceil(base64.length / CHUNK_SIZE);
+
+        console.log(`📤 Sending ${file.name} in ${totalChunks} chunks...`);
+
+        // Send each chunk with a small delay so we don't flood the WebSocket
+        for (let i = 0; i < totalChunks; i++) {
+            const chunk = base64.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+
+            setTimeout(() => {
+                if (ws?.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        username,
+                        room,
+                        type: "file-chunk",
+                        transferId,
+                        chunkIndex: i,
+                        totalChunks,
+                        chunk,
+                        fileName: file.name,
+                        mimeType: file.type
+                    }));
+                    console.log(`📤 Sent chunk ${i + 1}/${totalChunks}`);
+                }
+            }, i * 50); // 50ms delay between chunks
         }
     };
 
@@ -228,9 +296,6 @@ function clearChat() {
     }
 }
 
-// ======= FIX 2: Invite link → goes to index.html with room pre-filled =======
-// login.js reads ?room= from URL and auto-fills the room code field
-// So the invited user still enters their name before joining
 function generateInviteLink() {
     const link = `${window.location.origin}/index.html?room=${encodeURIComponent(room)}`;
     prompt("Share this link to invite others:", link);
