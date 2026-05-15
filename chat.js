@@ -16,22 +16,25 @@ fileInput.accept = "image/*,video/*,audio/*,application/pdf,application/msword,a
 document.body.appendChild(fileInput);
 
 // Get username & room from localStorage
-const username = localStorage.getItem("convox_username") || "Guest";
-const room = localStorage.getItem("convox_room") || "NoRoom";
+const username = localStorage.getItem("convox_username");
+const room = localStorage.getItem("convox_room");
+
+// ======= FIX 1: No username/room = send back to login page =======
+// This handles the case where someone opens chat.html directly without logging in
+if (!username || !room) {
+    window.location.href = "index.html";
+}
 
 // Session messages (in-memory)
 let messages = [];
 
-// ======= WEBSOCKET SETUP (PieSocket - free, no backend needed) =======
-// Sign up free at https://piesocket.com to get your own API key
-// Free plan: 1000 connections/day — enough for testing & small projects
+// ======= WEBSOCKET SETUP =======
 const PIESOCKET_API_KEY = "RISge0Z62ctXhdrgVlmftrWvDZ2igqJpAw1m23Qn";
 const PIESOCKET_CLUSTER = "free.blr2";
 
 let ws = null;
 
 function initWebSocket() {
-    // Each room code becomes its own PieSocket channel
     const wsUrl = `wss://${PIESOCKET_CLUSTER}.piesocket.com/v3/${encodeURIComponent(room)}?api_key=${PIESOCKET_API_KEY}&notify_self=1`;
 
     console.log("🔄 Connecting to room:", room);
@@ -45,16 +48,21 @@ function initWebSocket() {
         try {
             const data = JSON.parse(event.data);
 
-            // Only show messages that have our app's marker
-            // and are NOT sent by the current user (avoid echo)
-            if (data._convox && data.username !== username) {
-                displayMessage({
-                    sender: data.username,
-                    content: data.content,
-                    type: data.type || "text",
-                    fileURL: data.fileURL || ""
-                });
-            }
+            // Ignore PieSocket system messages (they have no username)
+            if (!data.username) return;
+
+            // Ignore own messages (we show them instantly on send)
+            if (data.username === username) return;
+
+            // Show message from other users
+            displayMessage({
+                sender: data.username,
+                content: data.content,
+                type: data.type || "text",
+                fileURL: data.fileURL || "",
+                mimeType: data.mimeType || ""
+            });
+
         } catch (e) {
             // Ignore non-JSON system messages from PieSocket
         }
@@ -69,21 +77,23 @@ function initWebSocket() {
 }
 
 // ======= START =======
-alert(`${username} joined the room: ${room}`);
+console.log(`${username} joined room: ${room}`);
 initWebSocket();
 
 // ======= DISPLAY MESSAGE =======
-function displayMessage({ sender, content, type = "text", fileURL = "" }) {
+function displayMessage({ sender, content, type = "text", fileURL = "", mimeType = "" }) {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("message");
 
     if (type === "text") {
         msgDiv.innerHTML = `<strong>${sender}:</strong> ${content}`;
+
     } else if (type === "file") {
         const ext = content.split(".").pop().toLowerCase();
         let fileHTML = "";
 
         if (["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"].includes(ext)) {
+            // ✅ FIX 3: fileURL is now base64 so image previews & downloads work cross-device
             fileHTML = `
                 <div style="margin: 5px 0;">
                     <img src="${fileURL}" alt="${content}" 
@@ -94,11 +104,12 @@ function displayMessage({ sender, content, type = "text", fileURL = "" }) {
                         <a href="${fileURL}" download="${content}" style="font-size: 12px;">📥 Download</a>
                     </div>
                 </div>`;
+
         } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
             fileHTML = `
                 <div style="margin: 5px 0;">
                     <video controls style="max-width: 300px; max-height: 200px; border-radius: 8px;">
-                        <source src="${fileURL}" type="video/${ext}">
+                        <source src="${fileURL}" type="${mimeType || 'video/' + ext}">
                         Your browser doesn't support video.
                     </video>
                     <div style="margin-top: 5px;">
@@ -106,11 +117,12 @@ function displayMessage({ sender, content, type = "text", fileURL = "" }) {
                         <a href="${fileURL}" download="${content}" style="font-size: 12px;">📥 Download</a>
                     </div>
                 </div>`;
+
         } else if (["mp3", "wav", "ogg", "m4a"].includes(ext)) {
             fileHTML = `
                 <div style="margin: 5px 0;">
                     <audio controls style="width: 250px;">
-                        <source src="${fileURL}" type="audio/${ext}">
+                        <source src="${fileURL}" type="${mimeType || 'audio/' + ext}">
                         Your browser doesn't support audio.
                     </audio>
                     <div style="margin-top: 5px;">
@@ -118,6 +130,7 @@ function displayMessage({ sender, content, type = "text", fileURL = "" }) {
                         <a href="${fileURL}" download="${content}" style="font-size: 12px;">📥 Download</a>
                     </div>
                 </div>`;
+
         } else {
             fileHTML = `
                 <div style="margin: 5px 0; padding: 8px; background: #f0f0f0; border-radius: 8px;">
@@ -145,12 +158,10 @@ function sendMessage() {
 
     const msgObj = { sender: username, content: text, type: "text" };
     messages.push(msgObj);
-    displayMessage(msgObj); // Show immediately for sender
+    displayMessage(msgObj); // show instantly for sender
 
-    // Send to all others in the same room
     if (ws?.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
-            _convox: true,       // marker so we ignore PieSocket system msgs
             username,
             room,
             content: text,
@@ -161,63 +172,71 @@ function sendMessage() {
     msgInput.value = "";
 }
 
-// ======= FILE UPLOAD =======
+// ======= FILE UPLOAD — base64 so previews & downloads work on ALL devices =======
 function handleFileUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-        alert("File too large! Maximum size is 10MB.");
+    // 1MB limit — WebSocket can't handle huge files
+    if (file.size > 1 * 1024 * 1024) {
+        alert("File too large! Maximum size is 1MB.\nTip: compress your image before sending.");
         fileInput.value = "";
         return;
     }
 
-    const fileURL = URL.createObjectURL(file);
-    const msgObj = { sender: username, content: file.name, type: "file", fileURL };
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        // base64 data URL — works on any device, no server needed
+        const base64Data = e.target.result;
 
-    messages.push(msgObj);
-    displayMessage(msgObj); // Show immediately for sender
-
-    // NOTE: fileURL is a local blob — other users won't be able to see the file preview
-    // but they will see the filename. For full file sharing you'd need a file host (e.g. Firebase Storage).
-    if (ws?.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-            _convox: true,
-            username,
-            room,
+        const msgObj = {
+            sender: username,
             content: file.name,
             type: "file",
-            fileURL: "" // blob URLs don't work cross-device
-        }));
-    }
+            fileURL: base64Data,
+            mimeType: file.type
+        };
 
+        messages.push(msgObj);
+        displayMessage(msgObj); // show instantly for sender
+
+        if (ws?.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                username,
+                room,
+                content: file.name,
+                type: "file",
+                fileURL: base64Data, // ✅ real data, not a blob URL
+                mimeType: file.type
+            }));
+        }
+    };
+
+    reader.readAsDataURL(file);
     fileInput.value = "";
 }
 
-// ======= OTHER FUNCTIONS (UNCHANGED) =======
+// ======= OTHER FUNCTIONS =======
 function triggerFileUpload() {
     fileInput.click();
 }
 
 function clearChat() {
     if (confirm("Are you sure you want to clear the chat?")) {
-        messages.forEach(msg => {
-            if (msg.type === "file" && msg.fileURL) {
-                URL.revokeObjectURL(msg.fileURL);
-            }
-        });
         messages = [];
         chatContainer.innerHTML = "";
     }
 }
 
+// ======= FIX 2: Invite link → goes to index.html with room pre-filled =======
+// login.js reads ?room= from URL and auto-fills the room code field
+// So the invited user still enters their name before joining
 function generateInviteLink() {
-    const baseUrl = window.location.href.split("?")[0];
-    const link = `${baseUrl}?room=${encodeURIComponent(room)}`;
+    const link = `${window.location.origin}/index.html?room=${encodeURIComponent(room)}`;
     prompt("Share this link to invite others:", link);
 }
 
-// ======= EVENT LISTENERS (UNCHANGED) =======
+// ======= EVENT LISTENERS =======
 sendBtn.addEventListener("click", sendMessage);
 
 msgInput.addEventListener("keypress", function (e) {
@@ -231,8 +250,3 @@ uploadBtn.addEventListener("click", triggerFileUpload);
 fileInput.addEventListener("change", handleFileUpload);
 clearBtn.addEventListener("click", clearChat);
 inviteBtn.addEventListener("click", generateInviteLink);
-
-
-
-
-imp
