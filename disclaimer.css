@@ -1,4 +1,4 @@
-/* ======= disclaimer.css for ConvoX — Mobile First ======= */
+/* ======= disclaimer.css for ConvoX ======= */
 
 * {
     margin: 0;
@@ -9,154 +9,115 @@
 
 body {
     background-color: #0d1117;
+    background-image: radial-gradient(ellipse at top, #161b22 0%, #0d1117 70%);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    padding: 16px;
-    background-image: radial-gradient(ellipse at top, #161b22 0%, #0d1117 70%);
+    padding: 20px;
 }
 
 .container {
     background-color: #161b22;
     color: aliceblue;
     width: 100%;
-    max-width: 420px;
-    padding: 36px 28px;
+    max-width: 440px;
+    padding: 40px 32px;
     border-radius: 16px;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), 0 0 0 1px #30363d;
-    animation: fadeUp 0.4s ease;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 0 1px #30363d;
+    animation: fadeUp 0.35s ease;
 }
 
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ICON / WARNING BADGE */
-.disclaimer-icon {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 12px;
-}
-
+/* TITLE */
 .login h1 {
     text-align: center;
-    margin-bottom: 12px;
-    font-size: 24px;
+    font-size: 26px;
     color: #58A6FF;
-    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
 }
 
-/* DISCLAIMER TEXT */
+/* FEATURE LIST — fix the squished text by styling the <p> properly */
 .login p {
-    text-align: center;
-    font-size: 13px;
-    margin-bottom: 28px;
-    line-height: 1.7;
     color: #9aa4b2;
+    font-size: 14px;
+    line-height: 2;           /* good spacing between bullet lines */
+    margin-bottom: 28px;
+    text-align: left;
+    background: #0d1117;
+    border-radius: 10px;
+    padding: 16px 18px;
+    border: 1px solid #30363d;
 }
 
-/* HIGHLIGHT IMPORTANT WORDS */
-.login p strong {
-    color: #c9d1d9;
-}
-
-/* DIVIDER */
-.divider {
-    height: 1px;
-    background: #30363d;
-    margin-bottom: 24px;
-}
-
-/* LINK */
-a {
+/* BUTTONS */
+.login a {
     display: block;
-    margin-top: 14px;
-    text-align: center;
-    color: #58A6FF;
-    font-size: 13px;
+    margin-top: 0;
     text-decoration: none;
-    transition: color 0.2s;
 }
 
-a:hover {
-    color: #3b8eea;
-    text-decoration: underline;
+.login a + a {
+    margin-top: 10px;
 }
 
-/* BUTTON */
-button {
+.login button {
     width: 100%;
     padding: 13px;
-    background: #58A6FF;
     border: none;
     border-radius: 10px;
     color: white;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
 }
 
-button:hover {
+/* NEXT button - blue */
+.login a:first-of-type button {
+    background: #58A6FF;
+    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+}
+.login a:first-of-type button:hover {
     background: #3b8eea;
     box-shadow: 0 4px 20px rgba(88, 166, 255, 0.45);
 }
 
-button:active {
-    transform: scale(0.98);
+/* BACK button - subtle */
+.login a:last-of-type button {
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+}
+.login a:last-of-type button:hover {
+    background: #2d333b;
+    border-color: #58a6ff50;
 }
 
-/* ======= TABLET ======= */
-@media (max-width: 768px) {
-    .container {
-        padding: 30px 22px;
-    }
-    .login h1 {
-        font-size: 22px;
-    }
+.login button:active {
+    transform: scale(0.98);
 }
 
 /* ======= MOBILE ======= */
 @media (max-width: 480px) {
-    body {
-        padding: 12px;
-        align-items: flex-start;
-        padding-top: 40px;
-    }
-    .container {
-        padding: 26px 18px;
-        border-radius: 14px;
-    }
-    .login h1 {
-        font-size: 20px;
-    }
-    .login p {
-        font-size: 13px;
-        line-height: 1.6;
-    }
-    button {
-        padding: 14px;
-    }
+    body { padding: 16px; align-items: flex-start; padding-top: 50px; }
+    .container { padding: 28px 20px; }
+    .login h1 { font-size: 22px; }
+    .login p { font-size: 13px; line-height: 1.9; padding: 14px 14px; }
+    .login button { padding: 13px; font-size: 15px; }
 }
 
 /* ======= TINY PHONES ======= */
 @media (max-width: 360px) {
-    body {
-        padding: 8px;
-        padding-top: 24px;
-    }
-    .container {
-        padding: 20px 14px;
-    }
-    .login h1 {
-        font-size: 18px;
-    }
-    .login p {
-        font-size: 12px;
-    }
+    body { padding: 10px; padding-top: 30px; }
+    .container { padding: 22px 14px; }
+    .login h1 { font-size: 20px; }
+    .login p { font-size: 12px; }
 }
