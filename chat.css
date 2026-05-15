@@ -1,278 +1,171 @@
-/* ======= chat.css for ConvoX — Mobile First ======= */
+/* ======= login.css for ConvoX — Mobile First ======= */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-    height: 100vh;
-    height: -webkit-fill-available; /* iOS fix */
-    overflow: hidden;
-    font-family: system-ui, -apple-system, sans-serif;
-    background: #0d1117;
-    color: white;
+    background-color: #0d1117;
     display: flex;
-    flex-direction: column;
-}
-
-/* ======= TOP BAR ======= */
-.top {
-    height: 56px;
-    padding: 0 14px;
-    background: #161b22;
-    border-bottom: 1px solid #30363d;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    position: relative;
-    z-index: 10;
-}
-
-.top h3 {
-    font-size: 17px;
-    color: #58a6ff;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
-}
-
-/* TOP BUTTONS */
-.top-buttons {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.top button {
-    padding: 6px 12px;
-    background: rgba(88, 166, 255, 0.08);
-    border: 1px solid rgba(88, 166, 255, 0.2);
-    color: #c9d1d9;
-    border-radius: 20px;
-    font-size: 13px;
-    cursor: pointer;
-    height: 32px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: background 0.2s, border-color 0.2s;
-    font-weight: 500;
+    align-items: center;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding: 16px;
+    background-image: radial-gradient(ellipse at top, #161b22 0%, #0d1117 70%);
 }
 
-.top button:hover {
-    background: rgba(88, 166, 255, 0.15);
-    border-color: rgba(88, 166, 255, 0.4);
-    color: #58a6ff;
-}
-
-.top button:active {
-    background: rgba(88, 166, 255, 0.25);
-    transform: scale(0.97);
-}
-
-/* ======= CHAT AREA ======= */
-.chat {
-    flex: 1;
-    overflow-y: auto;
-    padding: 14px 14px 20px;
-    background: #0d1117;
-    scroll-behavior: smooth;
-    /* Smooth scrolling on iOS */
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Scrollbar styling for desktop */
-.chat::-webkit-scrollbar {
-    width: 4px;
-}
-.chat::-webkit-scrollbar-track {
-    background: transparent;
-}
-.chat::-webkit-scrollbar-thumb {
-    background: #30363d;
-    border-radius: 4px;
-}
-
-/* ======= MESSAGE BUBBLE ======= */
-.message {
-    margin-bottom: 10px;
-    padding: 10px 14px;
-    background: #161b22;
+.container {
+    background-color: #161b22;
+    color: aliceblue;
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 28px;
     border-radius: 16px;
-    border-left: 3px solid #58a6ff;
-    max-width: 88%;
-    font-size: 14px;
-    line-height: 1.5;
-    word-break: break-word;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    animation: msgIn 0.2s ease;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), 0 0 0 1px #30363d;
+    animation: fadeUp 0.4s ease;
 }
 
-@keyframes msgIn {
-    from { opacity: 0; transform: translateY(6px); }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-.message strong {
-    color: #58a6ff;
+/* LOGO / TITLE */
+.login h1 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 28px;
+    color: #58A6FF;
+    letter-spacing: 1px;
+}
+
+.login p {
+    text-align: center;
     font-size: 13px;
+    margin-bottom: 28px;
+    color: #9aa4b2;
+    line-height: 1.5;
+}
+
+/* DIVIDER */
+.divider {
+    height: 1px;
+    background: #30363d;
+    margin-bottom: 24px;
+}
+
+/* LABELS */
+label {
     display: block;
-    margin-bottom: 3px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: #9aa4b2;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-/* ======= BOTTOM INPUT BAR ======= */
-.msg {
-    padding: 8px 12px;
-    background: #161b22;
-    border-top: 1px solid #30363d;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-    min-height: 60px;
-    /* Stay above iOS keyboard */
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
-}
-
-.msg input {
-    flex: 1;
-    padding: 10px 16px;
-    border: 1px solid #30363d;
-    border-radius: 24px;
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 18px;
     background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 10px;
     color: white;
-    font-size: 16px; /* prevents iOS zoom */
     outline: none;
-    min-height: 42px;
+    font-size: 16px; /* prevents iOS zoom */
     transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
 }
 
-.msg input::placeholder {
+input:focus {
+    border-color: #58A6FF;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+
+input::placeholder {
     color: #484f58;
 }
 
-.msg input:focus {
-    border-color: #58a6ff;
-    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.12);
-}
-
-/* UPLOAD & SEND BUTTONS */
-.upload, .send {
-    width: 42px;
-    height: 42px;
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 13px;
+    background: #58A6FF;
     border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.upload {
-    background: #21262d;
-    color: #8b949e;
-    font-size: 16px;
-    border: 1px solid #30363d;
-}
-
-.upload:hover {
-    background: #2d333b;
-    color: #c9d1d9;
-}
-
-.upload:active {
-    transform: scale(0.93);
-}
-
-.send {
-    background: #58a6ff;
+    border-radius: 10px;
     color: white;
-    font-size: 18px;
-    font-weight: 700;
-    box-shadow: 0 3px 10px rgba(88, 166, 255, 0.35);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
 }
 
-.send:hover {
+button:hover {
     background: #3b8eea;
-    box-shadow: 0 3px 14px rgba(88, 166, 255, 0.5);
+    box-shadow: 0 4px 20px rgba(88, 166, 255, 0.45);
 }
 
-.send:active {
-    transform: scale(0.93);
+button:active {
+    transform: scale(0.98);
+}
+
+/* FOOTER TEXT */
+.login .footer-text {
+    text-align: center;
+    font-size: 11px;
+    color: #484f58;
+    margin-top: 20px;
 }
 
 /* ======= TABLET ======= */
-@media (min-width: 600px) {
-    .message {
-        max-width: 75%;
-        font-size: 15px;
+@media (max-width: 768px) {
+    .container {
+        padding: 30px 22px;
     }
-    .top {
-        padding: 0 20px;
-    }
-    .msg {
-        padding: 10px 20px;
-    }
-    .chat {
-        padding: 16px 20px 24px;
+    .login h1 {
+        font-size: 26px;
     }
 }
 
-/* ======= DESKTOP ======= */
-@media (min-width: 900px) {
+/* ======= MOBILE ======= */
+@media (max-width: 480px) {
     body {
-        max-width: 800px;
-        margin: 0 auto;
-        height: 100vh;
-        box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        padding: 12px;
+        align-items: flex-start;
+        padding-top: 40px;
     }
-    .message {
-        max-width: 65%;
+    .container {
+        padding: 28px 18px;
+        border-radius: 14px;
     }
-    .upload, .send {
-        width: 46px;
-        height: 46px;
+    .login h1 {
+        font-size: 24px;
+    }
+    input {
+        padding: 14px;
+    }
+    button {
+        padding: 14px;
     }
 }
 
 /* ======= TINY PHONES ======= */
 @media (max-width: 360px) {
-    .top {
-        padding: 0 10px;
-        height: 50px;
+    body {
+        padding: 8px;
+        padding-top: 24px;
     }
-    .top h3 {
-        font-size: 15px;
+    .container {
+        padding: 22px 14px;
     }
-    .top-buttons {
-        gap: 5px;
-    }
-    .top button {
-        padding: 4px 8px;
-        font-size: 11px;
-        height: 28px;
-    }
-    .msg {
-        padding: 6px 8px;
-        gap: 6px;
-    }
-    .upload, .send {
-        width: 38px;
-        height: 38px;
-        font-size: 15px;
-    }
-    .message {
-        font-size: 13px;
-        padding: 9px 12px;
+    .login h1 {
+        font-size: 22px;
     }
 }
